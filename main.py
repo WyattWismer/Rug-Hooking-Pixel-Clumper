@@ -48,7 +48,7 @@ def stats(im, colors, ignore):
     im = im.convert(mode='RGB')
     cnt = OD()
     for c in colors:
-        if c != ignore:
+        if c not in ignore:
             cnt[c] = 0
     n = im.width
     m = im.height
@@ -61,7 +61,7 @@ def stats(im, colors, ignore):
             for c in colors:
                 if best == None or nw.dist(c) < nw.dist(best):
                     best = c
-            if best != ignore:
+            if best not in ignore:
                 cnt[best] += 1
                 num_pixels += 1
     pairs = [(cnt[key]/num_pixels*100,key) for key in cnt]
@@ -91,17 +91,17 @@ if __name__ == "__main__":
     if len(argv) < 3 or len(argv) > 4:
         print("Wrong number of arguments!\n")
         print("Usage:")
-        print("         python main.py IMAGE COLORS {IGNORE}\n")
+        print("         python main.py IMAGE COLORS {BLACKLIST}\n")
         print("Example:")
         print("         python main.py example.png colors.txt")
         print("Or:")
-        print("         python main.py turtle2.jpg colors.txt 2dff00")
+        print("         python main.py turtle2.jpg colors.txt blacklist.txt")
         exit()
     fname = argv[1]
     color_fname = argv[2]
     ignore = None
     if len(argv) == 4:
-        ignore = hexToColor(argv[3])
+        ignore = load_colors(argv[3])
     im = load_image(fname)
     colors = load_colors(color_fname)
     im.show()
